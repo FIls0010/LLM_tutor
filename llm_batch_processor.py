@@ -23,54 +23,143 @@ Features:
     * rerun_failed  : find rows in the output CSV with status error/refused and rerun those (append results)
     * rerun_ids     : rerun a user-specified list of IDs (comma-separated)
  - Concurrency with ThreadPoolExecutor
- - Resilient: errors/refusals are recorded and processing continues
+ - Resilience: errors/refusals are recorded and processing continues
  - Cost/token tracking (optional, via CLI prices)
  - Appends rerun results (C-1 behaviour); does not overwrite original rows
  - No timestamp column (per user request)
 
 Notes:
+- Set your OPENAI_API_KEY in the environment before running:
+    export OPENAI_API_KEY="sk-..."
 - The script will read OPENAI_API_KEY from the environment.
 - To enable cost computations, provide --price-input-per-1k and/or --price-output-per-1k
   (USD per 1000 tokens). Default is 0.0 (costs not calculated).
-- The script is resilient: if a single row fails, it logs the error in the output CSV and continues.
+- Error handling: if a single row fails, it logs the error in the output CSV and continues.
 - Current OpenAI model prices (per 1M tokens):
-Model	Input	Cached input	Output
-gpt-5	$1.25	$0.125	$10.00
-gpt-5-mini	$0.25	$0.025	$2.00
-gpt-5-nano	$0.05	$0.005	$0.40
-gpt-5-chat-latest	$1.25	$0.125	$10.00
-gpt-5-codex	$1.25	$0.125	$10.00
-gpt-5-pro	$15.00	-	$120.00
-gpt-4.1	$2.00	$0.50	$8.00
-gpt-4.1-mini	$0.40	$0.10	$1.60
-gpt-4.1-nano	$0.10	$0.025	$0.40
-gpt-4o	$2.50	$1.25	$10.00
-gpt-4o-2024-05-13	$5.00	-	$15.00
-gpt-4o-mini	$0.15	$0.075	$0.60
-gpt-realtime	$4.00	$0.40	$16.00
-gpt-realtime-mini	$0.60	$0.06	$2.40
-gpt-4o-realtime-preview	$5.00	$2.50	$20.00
-gpt-4o-mini-realtime-preview	$0.60	$0.30	$2.40
-gpt-audio	$2.50	-	$10.00
-gpt-audio-mini	$0.60	-	$2.40
-gpt-4o-audio-preview	$2.50	-	$10.00
-gpt-4o-mini-audio-preview	$0.15	-	$0.60
-o1	$15.00	$7.50	$60.00
-o1-pro	$150.00	-	$600.00
-o3-pro	$20.00	-	$80.00
-o3	$2.00	$0.50	$8.00
-o3-deep-research	$10.00	$2.50	$40.00
-o4-mini	$1.10	$0.275	$4.40
-o4-mini-deep-research	$2.00	$0.50	$8.00
-o3-mini	$1.10	$0.55	$4.40
-o1-mini	$1.10	$0.55	$4.40
-codex-mini-latest	$1.50	$0.375	$6.00
-gpt-5-search-api	$1.25	$0.125	$10.00
-gpt-4o-mini-search-preview	$0.15	-	$0.60
-gpt-4o-search-preview	$2.50	-	$10.00
-computer-use-preview	$3.00	-	$12.00
-gpt-image-1	$5.00	$1.25	-
-gpt-image-1-mini	$2.00	$0.20	-
+
+Pricing
+=======
+
+### 
+
+Text tokens
+
+Prices per 1M tokens.
+
+Batch
+
+|Model|Input|Cached input|Output|
+|---|---|---|---|
+|gpt-5.2|$0.875|$0.0875|$7.00|
+|gpt-5.1|$0.625|$0.0625|$5.00|
+|gpt-5|$0.625|$0.0625|$5.00|
+|gpt-5-mini|$0.125|$0.0125|$1.00|
+|gpt-5-nano|$0.025|$0.0025|$0.20|
+|gpt-5.2-pro|$10.50|-|$84.00|
+|gpt-5-pro|$7.50|-|$60.00|
+|gpt-4.1|$1.00|-|$4.00|
+|gpt-4.1-mini|$0.20|-|$0.80|
+|gpt-4.1-nano|$0.05|-|$0.20|
+|gpt-4o|$1.25|-|$5.00|
+|gpt-4o-2024-05-13|$2.50|-|$7.50|
+|gpt-4o-mini|$0.075|-|$0.30|
+|o1|$7.50|-|$30.00|
+|o1-pro|$75.00|-|$300.00|
+|o3-pro|$10.00|-|$40.00|
+|o3|$1.00|-|$4.00|
+|o3-deep-research|$5.00|-|$20.00|
+|o4-mini|$0.55|-|$2.20|
+|o4-mini-deep-research|$1.00|-|$4.00|
+|o3-mini|$0.55|-|$2.20|
+|o1-mini|$0.55|-|$2.20|
+|computer-use-preview|$1.50|-|$6.00|
+
+Flex
+
+|Model|Input|Cached input|Output|
+|---|---|---|---|
+|gpt-5.2|$0.875|$0.0875|$7.00|
+|gpt-5.1|$0.625|$0.0625|$5.00|
+|gpt-5|$0.625|$0.0625|$5.00|
+|gpt-5-mini|$0.125|$0.0125|$1.00|
+|gpt-5-nano|$0.025|$0.0025|$0.20|
+|o3|$1.00|$0.25|$4.00|
+|o4-mini|$0.55|$0.138|$2.20|
+
+Standard
+
+|Model|Input|Cached input|Output|
+|---|---|---|---|
+|gpt-5.2|$1.75|$0.175|$14.00|
+|gpt-5.1|$1.25|$0.125|$10.00|
+|gpt-5|$1.25|$0.125|$10.00|
+|gpt-5-mini|$0.25|$0.025|$2.00|
+|gpt-5-nano|$0.05|$0.005|$0.40|
+|gpt-5.2-chat-latest|$1.75|$0.175|$14.00|
+|gpt-5.1-chat-latest|$1.25|$0.125|$10.00|
+|gpt-5-chat-latest|$1.25|$0.125|$10.00|
+|gpt-5.1-codex-max|$1.25|$0.125|$10.00|
+|gpt-5.1-codex|$1.25|$0.125|$10.00|
+|gpt-5-codex|$1.25|$0.125|$10.00|
+|gpt-5.2-pro|$21.00|-|$168.00|
+|gpt-5-pro|$15.00|-|$120.00|
+|gpt-4.1|$2.00|$0.50|$8.00|
+|gpt-4.1-mini|$0.40|$0.10|$1.60|
+|gpt-4.1-nano|$0.10|$0.025|$0.40|
+|gpt-4o|$2.50|$1.25|$10.00|
+|gpt-4o-2024-05-13|$5.00|-|$15.00|
+|gpt-4o-mini|$0.15|$0.075|$0.60|
+|gpt-realtime|$4.00|$0.40|$16.00|
+|gpt-realtime-mini|$0.60|$0.06|$2.40|
+|gpt-4o-realtime-preview|$5.00|$2.50|$20.00|
+|gpt-4o-mini-realtime-preview|$0.60|$0.30|$2.40|
+|gpt-audio|$2.50|-|$10.00|
+|gpt-audio-mini|$0.60|-|$2.40|
+|gpt-4o-audio-preview|$2.50|-|$10.00|
+|gpt-4o-mini-audio-preview|$0.15|-|$0.60|
+|o1|$15.00|$7.50|$60.00|
+|o1-pro|$150.00|-|$600.00|
+|o3-pro|$20.00|-|$80.00|
+|o3|$2.00|$0.50|$8.00|
+|o3-deep-research|$10.00|$2.50|$40.00|
+|o4-mini|$1.10|$0.275|$4.40|
+|o4-mini-deep-research|$2.00|$0.50|$8.00|
+|o3-mini|$1.10|$0.55|$4.40|
+|o1-mini|$1.10|$0.55|$4.40|
+|gpt-5.1-codex-mini|$0.25|$0.025|$2.00|
+|codex-mini-latest|$1.50|$0.375|$6.00|
+|gpt-5-search-api|$1.25|$0.125|$10.00|
+|gpt-4o-mini-search-preview|$0.15|-|$0.60|
+|gpt-4o-search-preview|$2.50|-|$10.00|
+|computer-use-preview|$3.00|-|$12.00|
+|gpt-image-1|$5.00|$1.25|-|
+|gpt-image-1-mini|$2.00|$0.20|-|
+
+Priority
+
+|Model|Input|Cached input|Output|
+|---|---|---|---|
+|gpt-5.2|$3.50|$0.35|$28.00|
+|gpt-5.1|$2.50|$0.25|$20.00|
+|gpt-5|$2.50|$0.25|$20.00|
+|gpt-5-mini|$0.45|$0.045|$3.60|
+|gpt-5.1-codex-max|$2.50|$0.25|$20.00|
+|gpt-5.1-codex|$2.50|$0.25|$20.00|
+|gpt-5-codex|$2.50|$0.25|$20.00|
+|gpt-4.1|$3.50|$0.875|$14.00|
+|gpt-4.1-mini|$0.70|$0.175|$2.80|
+|gpt-4.1-nano|$0.20|$0.05|$0.80|
+|gpt-4o|$4.25|$2.125|$17.00|
+|gpt-4o-2024-05-13|$8.75|-|$26.25|
+|gpt-4o-mini|$0.25|$0.125|$1.00|
+|o3|$3.50|$0.875|$14.00|
+|o4-mini|$2.00|$0.50|$8.00|
+
+For faster processing of API requests, try the [priority processing service tier](/docs/guides/priority-processing). For lower prices with higher latency, try the [flex processing tier](/docs/guides/flex-processing).
+
+Large numbers of API requests which are not time-sensitive can use the [Batch API](/docs/guides/batch) for additional savings as well.
+
+While reasoning tokens are not visible via the API, they still occupy space in the model's context window and are billed as output tokens.
 
 """
 
@@ -88,7 +177,7 @@ from openai import OpenAI
 
 # ----------------- Utility / API wrapper -----------------
 
-client = OpenAI()  # uses OPENAI_API_KEY env var
+client = OpenAI()  # uses OPENAI_API_KEY env var - set with 'export OPENAI_API_KEY="sk-..."'
 
 def _safe_get_usage(resp: Any) -> Dict[str, Optional[int]]:
     usage = getattr(resp, "usage", None)
@@ -126,8 +215,8 @@ def _looks_like_refusal(text: str) -> bool:
 # --------------------
 def call_responses_api(messages: List[Dict[str, str]],
                        model: str,
-                       #temperature: float,   -> GPT-5 Responses API does not support temperature param any longer
-                       #max_output_tokens: int,
+                       #temperature: float,         -> Only pre-GPT-5 models (GPT-5 + Responses API does not support temperature param any longer)
+                       #max_output_tokens: int,     -> Use if you want to limit the output length
                        timeout: int = 60) -> Tuple[str, Dict[str, Optional[int]], Any]:
     """
     Call OpenAI Responses API (synchronous).
@@ -137,8 +226,8 @@ def call_responses_api(messages: List[Dict[str, str]],
     resp = client.responses.create(
         model=model,
         input=messages,
-        #temperature=temperature,
-        #max_output_tokens=max_output_tokens,
+        #temperature=temperature,                   -> As line 218 (Only pre-GPT-5 models)
+        #max_output_tokens=max_output_tokens,       -> As line 219
         timeout=timeout,
     )
     text = getattr(resp, "output_text", None)
@@ -165,8 +254,8 @@ def call_responses_api(messages: List[Dict[str, str]],
 
 def robust_call(messages: List[Dict[str, str]],
                 model: str,
-                #temperature: float,
-                #max_output_tokens: int,
+                #temperature: float,                -> As line 218
+                #max_output_tokens: int,            -> As line 219
                 max_retries: int = 5,
                 base_backoff: float = 1.0,
                 timeout: int = 60) -> Tuple[Optional[str], Dict[str, Optional[int]], Optional[str], Optional[Any]]:
@@ -199,8 +288,8 @@ def process_row(idx: int,
                 row: Dict[str, str],
                 system_prompt: Optional[str],
                 model: str,
-                #temperature: float,
-                #max_output_tokens: int,
+                #temperature: float,                    -> As line 218
+                #max_output_tokens: int,                -> As line 219
                 max_retries: int,
                 timeout: int) -> Dict[str, Any]:
     """
@@ -260,9 +349,9 @@ def main():
     parser.add_argument("--output", "-o", required=True, help="Output CSV file path to create/append")
     parser.add_argument("--system", "-s", required=True, help="Path to system prompt text file")
     parser.add_argument("--model", "-m", default="gpt-4o", help="Model name (default gpt-4o)")
-    #parser.add_argument("--temperature", "-t", type=float, default=0.2)
+    #parser.add_argument("--temperature", "-t", type=float, default=0.2)                                        -> Only pre-GPT-5 models (GPT-5 + Responses API does not support temperature param any longer)
     parser.add_argument("--concurrency", "-c", type=int, default=3, help="Number of parallel workers (default 3)")
-    #parser.add_argument("--max-output-tokens", type=int, default=1024, help="Max tokens for model output")
+    #parser.add_argument("--max-output-tokens", type=int, default=1024, help="Max tokens for model output")     -> Use if you want to limit the output length
     parser.add_argument("--max-retries", type=int, default=5, help="Max retries per request")
     parser.add_argument("--timeout", type=int, default=60, help="Per-request timeout (seconds)")
     parser.add_argument("--save-interval", type=int, default=5, help="Save progress every N completed rows")
