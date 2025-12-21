@@ -6,13 +6,17 @@
 
 ## Overview
 
-This repository provides a simple, end-to-end pipeline for academics, teachers, and course coordinators who want to:
+This repository provides a simple, end-to-end pipeline for academics, teachers, and course coordinators who want to design AI Tutor chatbots that support learning without giving away answers to graded questions.
+It's designed to prepare a chatbot that encourages learning and critical thinking by providing help and guidance to students, detecting when they are asking for direct answers to questions in their syllabus, politely refusing to answer them, and providing appropriate tutor or teacher
+like help instead.
 
-- Design AI Tutor chatbots that support learning without giving away graded answers
+You will be able to:
+- Customise an AI tutor to suit your course, style, and syllabus
 - Precisely control how an AI tutor behaves using a custom system prompt
-- Stress-test the tutor against realistic student prompts, including adversarial or manipulative attempts
-- Automatically evaluate tutor behaviour at scale, without manually reviewing hundreds of responses
-- Prepare an AI tutor for safe production deployment in an existing chatbot interface
+- Train an AI tutor that maintains academic integrity
+- Stress-test the tutor against realistic student prompts, including adversarial or manipulative attempts to extract answers to questions it shouldn't give away
+- Automatically evaluate the Ai tutor's behaviour at scale, without needing to manually review hundreds or thousands of responses
+- Prepare an AI tutor for safe production deployment in an existing chatbot interface, perfect for academic uses
 
 **No prior programming experience is required beyond running a few terminal commands.**
 
@@ -76,7 +80,7 @@ You are encouraged to *customise this prompt* to suit your course or institution
 #### Examples of customisation:
 
 - Allow direct answers for practice questions but not exams
-- Detect and refuse specific assessment questions copied directly from your course
+- Detect and refuse *specific assessment questions* copied directly from your course
 - Change how refusals are phrased
 - Adjust tone (more formal / more conversational)
 - Align explanations with your course's learning outcomes
@@ -97,7 +101,7 @@ This script sends many prompts at once to the AI tutor and records its responses
 - Handles refusals and errors gracefully
 - Supports rerunning only failed or selected prompts
 
-This allows you to **stress-test tutor behaviour** across dozens or hundreds of realistic student queries.
+This allows you to **stress-test tutor behaviour** across dozens, hundreds, even thousands, of realistic student queries.
 
 ---
 
@@ -109,7 +113,7 @@ This script uses *LLM-as-a-Judge* to automatically evaluate whether the tutor be
 
 The default custom rubric prioritises:
 
-- Adherence to the tutoring role
+- Adherence to the tutoring role (detecting graded questions, and not providing answers to them outright)
 - Educational value
 - Accuracy
 - Tone and safety
@@ -119,6 +123,8 @@ You can:
 - Use the provided rubric
 - Modify it
 - Replace it entirely with your own to customise behaviour evaluation to your heart's content!
+
+You're free to ignore the LLM Judge's evaluation entirely if you'd prefer to check the Tutor's answer manually. This step just saves time when evaluating behaviour at scale.
 
 ---
 
@@ -138,6 +144,7 @@ This defines:
 - How it responds to graded questions
 - How it handles manipulation attempts
 
+Here you can add *specific questions* you want it to look out for (e.g., the ones students will be graded on).
 ---
 
 ### Step 2: Prepare Your Input Prompts CSV
@@ -146,9 +153,9 @@ Create a CSV file (e.g. `prompts.csv`) with **exactly these 3 columns**:
 
 | Column | Description |
 |--------|-------------|
-| **id** | Any unique identifier you choose |
-| **strategy** | (Optional but recommended) The strategy used to try to extract an answer |
-| **prompt** | The actual student message |
+| **id** | Any unique identifier of our choosing |
+| **strategy** | (Optional but recommended) The strategy used to try to extract an answer (see prompts.csv for examples) |
+| **prompt** | The actual student message - what the student will ask the chatbot (make them as sneaky as possible to stress test your tutor's behaviour) |
 
 **Example:**
 
@@ -231,7 +238,7 @@ python3 llm_evaluator.py \
 
 - Per-criterion scores
 - Total score
-- Critical failure flags
+- Critical failure flags (where the tutor has given the answer away. If this happens, you'll need to adjust your system prompt and run the pipeline again)
 - Detailed reasoning from the judge model
 
 This allows you to quantitatively assess tutor safety and usefulness.
@@ -246,7 +253,7 @@ Standard LLM evaluation metrics typically focus on:
 - Similarity to a reference answer
 - Code quality
 
-These are not suitable for evaluating AI tutors whose primary goal is not to give answers.
+These are not suitable for evaluating AI tutors whose primary goal is **not** to give direct answers.
 
 This repo includes a **custom rubric** designed specifically to evaluate:
 
@@ -255,7 +262,7 @@ This repo includes a **custom rubric** designed specifically to evaluate:
 - Resistance to manipulation
 - Safety and tone
 
-You may adapt or replace it entirely to suit your institution's needs.
+You may adapt or replace it entirely to suit your institution / course needs.
 
 ---
 
@@ -353,13 +360,13 @@ A 10-point scoring system that evaluates:
 - **Content accuracy** (0-2 points): Is the information factually correct?
 - **Tone and safety** (0-1 point): Is it professional and supportive?
 
-- **Customisable**: if this rubric does not sut your needs, just write your own rubric.txt!
+- **Customisable**: if this rubric does not suit your needs, just write your own rubric.txt!
 
 ### 5. **Sample Test Data**
 
-- `prompts2.csv`: Example adversarial prompts designed to test tutor boundaries
-- `responses2.csv`: Sample tutor responses (GPT-5 tested)
-- `evaluated_responses_gpt5_2.csv`: Evaluation results with scores and reasoning
+- `prompts.csv`: Example adversarial prompts designed to test tutor boundaries
+- `responses.csv`: Sample tutor responses (GPT-5 tested)
+- `evaluated_responses_gpt5.csv`: Evaluation results with scores and reasoning
 
 ---
 
@@ -403,7 +410,7 @@ python3 llm_batch_processor.py \
 | `--system` / `-s` | System prompt file | *required* | Your tutor's instructions |
 | `--model` / `-m` | OpenAI model name | `gpt-4o` | See pricing section below |
 | `--concurrency` / `-c` | Parallel workers | `3` | Higher = faster but more API load |
-| `--temperature` / `-t` | Sampling temperature | `0.7` | 0.0-1.0; lower = more deterministic |
+| `--temperature` / `-t` | Sampling temperature | `0.7` | 0.0-1.0; lower = more deterministic (do not include for gpt-5 or newer) |
 | `--max-tokens` | Max response length | `2048` | Increase for longer responses |
 | `--save-interval` | Save every N rows | `5` | Progress saved periodically |
 | `--mode` | Processing mode | `all` | Options: `all`, `continue`, `rerun_failed`, `rerun_ids` |
@@ -429,7 +436,7 @@ id,strategy,prompt,response,status,error,prompt_tokens,completion_tokens,total_t
 - **status**: `ok`, `error`, or `refused`
 - **error**: Error message if status ≠ ok
 - **tokens**: Token usage for cost tracking
-- **cost_usd**: Estimated cost (if prices provided)
+- **cost_usd**: Estimated cost (if prices provided as arguments)
 
 ---
 
@@ -484,7 +491,7 @@ These are prominently marked with `[⚠️ CRITICAL FAILURE]` in console output 
 
 ---
 
-## 🎓 Customisation Guide
+## Customisation Guide
 
 ### For Your Course/Subject
 
@@ -532,9 +539,7 @@ WITHOUT revealing step-by-step mechanisms that appear on exams
 
 ## Cost Estimation
 
-### OpenAI Pricing (December 2024, Standard Tier, per 1M tokens)
-
-### OpenAI Pricing (December 2025, Standard Tier, per 1M tokens)
+### OpenAI Pricing (As of December 2025, Standard Tier, per 1M tokens)
 
 | Model | Input | Cached Input | Output | Recommended For |
 |-------|-------|--------------|--------|-----------------|
@@ -642,7 +647,7 @@ Once you're satisfied with your tutor's performance:
 1. **Export your system prompt**: The final `system_prompt.txt` is production-ready
 2. **Integrate with chatbot backend**: Use with ChatGPT Enterprise, Claude, or custom interfaces
 3. **Monitor in production**: Collect student feedback and problem cases
-4. **Iterate**: Add new red flags as you discover edge cases
+4. **Iterate**: Add new red flags and adjust your system prompt as you discover edge cases
 
 The system prompt can be directly used with:
 
@@ -654,7 +659,7 @@ The system prompt can be directly used with:
 
 ---
 
-## ⚖️ License
+## License
 
 MIT License
 
