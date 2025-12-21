@@ -1,6 +1,6 @@
-# 📚 AI Tutor Evaluation & Testing Pipeline
+# AI Tutor Evaluation & Testing Pipeline
 
-**A practical toolkit for designing, testing, and validating AI tutor chatbots for academic use**
+*A practical toolkit for designing, testing, and validating AI tutor chatbots for academic use*
 
 ---
 
@@ -8,11 +8,11 @@
 
 This repository provides a simple, end-to-end pipeline for academics, teachers, and course coordinators who want to:
 
-- **Design AI Tutor chatbots** that support learning without giving away graded answers
-- **Precisely control** how an AI tutor behaves using a custom system prompt
-- **Stress-test** the tutor against realistic student prompts, including adversarial or manipulative attempts
-- **Automatically evaluate** tutor behaviour at scale, without manually reviewing hundreds of responses
-- **Prepare an AI tutor** for safe production deployment in an existing chatbot interface
+- Design AI Tutor chatbots that support learning without giving away graded answers
+- Precisely control how an AI tutor behaves using a custom system prompt
+- Stress-test the tutor against realistic student prompts, including adversarial or manipulative attempts
+- Automatically evaluate tutor behaviour at scale, without manually reviewing hundreds of responses
+- Prepare an AI tutor for safe production deployment in an existing chatbot interface
 
 **No prior programming experience is required beyond running a few terminal commands.**
 
@@ -23,17 +23,17 @@ This repository provides a simple, end-to-end pipeline for academics, teachers, 
 ### ✅ What it is
 
 - A **testing & evaluation pipeline** for AI tutors
-- A way to **validate academic integrity** safeguards
-- A system for **iterating on tutor behaviour** quickly
-- A **reproducible workflow** suitable for university teaching environments
+- A way to validate academic integrity safeguards
+- A system for iterating on tutor behaviour quickly
+- A reproducible workflow suitable for university teaching environments
 
 ### ❌ What it is not
 
 - A chatbot frontend or UI
 - A replacement for your institution's LMS or chatbot platform
-- A tool that generates direct answers to assessments
+- A tool that generates direct answers to assessment questions
 
-**Instead**, this repo helps you design and verify the behaviour of an AI tutor before deployment.
+Instead, this repo helps you design and verify the behaviour of an AI tutor before deployment.
 
 ---
 
@@ -53,7 +53,7 @@ This repository lets you:
 
 1. **Define exactly how the tutor should behave** (via a system prompt)
 2. **Test that behaviour** across many prompts automatically
-3. **Evaluate whether the tutor** stayed within its intended role
+3. **Evaluate** whether the tutor stayed within its intended role
 
 ---
 
@@ -61,7 +61,7 @@ This repository lets you:
 
 ### 1. AI Tutor System Prompt
 
-At the heart of the pipeline is a **system prompt** that defines the tutor's identity, behaviour, and restrictions.
+At the heart of the pipeline is a *system prompt* that defines the tutor's identity, behaviour, and restrictions.
 
 The default prompt provided:
 
@@ -71,7 +71,7 @@ The default prompt provided:
 - Resists jailbreak and manipulation attempts
 - Encourages conceptual understanding and self-learning
 
-**You are encouraged to customise this prompt** to suit your course or institution.
+You are encouraged to *customise this prompt* to suit your course or institution.
 
 #### Examples of customisation:
 
@@ -81,13 +81,13 @@ The default prompt provided:
 - Adjust tone (more formal / more conversational)
 - Align explanations with your course's learning outcomes
 
-**No code changes are required** — you only edit a text file.
+**No code changes are required** — you only need to edit a text file to customise your AI Tutor's behaviour.
 
 ---
 
 ### 2. Batch Tutor Testing (`llm_batch_processor.py`)
 
-This script sends many prompts at once to the AI tutor and records its responses.
+This script sends many prompts at once to the AI tutor and records its responses to each.
 
 **What it does:**
 
@@ -103,11 +103,11 @@ This allows you to **stress-test tutor behaviour** across dozens or hundreds of 
 
 ### 3. Automated Evaluation (`llm_evaluator.py`)
 
-Manually reviewing 100+ AI responses is slow and error-prone.
+Manually reviewing 100+ AI responses is time consuming.
 
-This script uses **LLM-as-a-Judge** to automatically evaluate whether the tutor behaved correctly.
+This script uses *LLM-as-a-Judge* to automatically evaluate whether the tutor behaved correctly according to a customisable rubric.
 
-It scores each response against a custom rubric that prioritises:
+The default custom rubric prioritises:
 
 - Adherence to the tutoring role
 - Educational value
@@ -118,7 +118,7 @@ You can:
 
 - Use the provided rubric
 - Modify it
-- Replace it entirely with your own
+- Replace it entirely with your own to customise behaviour evaluation to your heart's content!
 
 ---
 
@@ -142,7 +142,7 @@ This defines:
 
 ### Step 2: Prepare Your Input Prompts CSV
 
-Create a CSV file (e.g. `prompts.csv`) with **exactly these columns**:
+Create a CSV file (e.g. `prompts.csv`) with **exactly these 3 columns**:
 
 | Column | Description |
 |--------|-------------|
@@ -220,7 +220,7 @@ This allows **manual spot-checking** before automated evaluation.
 python3 llm_evaluator.py \
     --input responses.csv \
     --output evaluated_responses.csv \
-    --judge-model gpt-4o \
+    --judge-model gpt-5.1 \
     --rubric rubric.txt \
     --concurrency 3 \
     --price-input-per-1k 0.0025 \
@@ -234,7 +234,7 @@ python3 llm_evaluator.py \
 - Critical failure flags
 - Detailed reasoning from the judge model
 
-This allows you to **quantitatively assess** tutor safety and usefulness.
+This allows you to quantitatively assess tutor safety and usefulness.
 
 ---
 
@@ -246,14 +246,14 @@ Standard LLM evaluation metrics typically focus on:
 - Similarity to a reference answer
 - Code quality
 
-**These are not suitable** for evaluating AI tutors whose primary goal is **not** to give answers.
+These are not suitable for evaluating AI tutors whose primary goal is not to give answers.
 
 This repo includes a **custom rubric** designed specifically to evaluate:
 
-- ✅ Refusal correctness
-- ✅ Pedagogical quality
-- ✅ Resistance to manipulation
-- ✅ Safety and tone
+- Refusal correctness (does it correctly refuse to give answers to questions students are being assessed on?)
+- Pedagogical quality
+- Resistance to manipulation
+- Safety and tone
 
 You may adapt or replace it entirely to suit your institution's needs.
 
@@ -281,9 +281,9 @@ Anyone with:
 
 Once satisfied with tutor behaviour:
 
-- **Reuse your system prompt** in any chatbot frontend
-- **Deploy with confidence** that it has been tested
-- **Retain your evaluation data** as documentation of due diligence
+- Reuse your system prompt in any chatbot frontend
+- Deploy with confidence that it has been tested
+- Retain your evaluation data as documentation of due diligence
 
 ---
 
@@ -322,7 +322,7 @@ python3 llm_evaluator.py \
 
 ---
 
-## 📚 What's Included
+## What's Included
 
 ### 1. **System Prompt** (`system_prompt.txt`)
 
@@ -334,7 +334,7 @@ A battle-tested, general-purpose AI tutor prompt that:
 - Maintains an encouraging, professional tone
 - Has been validated across 140+ adversarial test cases
 
-**Customization**: Edit this file to add course-specific graded questions, adjust response style, or modify detection patterns for your specific needs.
+**Customisation**: Edit this file to add course-specific graded questions, adjust response style, or modify detection patterns for your specific needs.
 
 ### 2. **Batch Processing Script** (`llm_batch_processor.py`)
 
@@ -353,15 +353,17 @@ A 10-point scoring system that evaluates:
 - **Content accuracy** (0-2 points): Is the information factually correct?
 - **Tone and safety** (0-1 point): Is it professional and supportive?
 
+- **Customisable**: if this rubric does not sut your needs, just write your own rubric.txt!
+
 ### 5. **Sample Test Data**
 
-- `prompts.csv`: Example adversarial prompts designed to test tutor boundaries
+- `prompts2.csv`: Example adversarial prompts designed to test tutor boundaries
 - `responses2.csv`: Sample tutor responses (GPT-5 tested)
-- `evaluated_responses_gpt5.csv`: Evaluation results with scores and reasoning
+- `evaluated_responses_gpt5_2.csv`: Evaluation results with scores and reasoning
 
 ---
 
-## 📋 Detailed Usage Guide
+## Detailed Usage Guide
 
 ### Input CSV Format (`prompts.csv`)
 
@@ -482,7 +484,7 @@ These are prominently marked with `[⚠️ CRITICAL FAILURE]` in console output 
 
 ---
 
-## 🎓 Customization Guide
+## 🎓 Customisation Guide
 
 ### For Your Course/Subject
 
@@ -502,7 +504,7 @@ These are prominently marked with `[⚠️ CRITICAL FAILURE]` in console output 
 
 - Copy `rubric.txt` to `rubric_biology.txt`
 - Adjust scoring criteria for your discipline
-- Weight different aspects (e.g., more emphasis on accuracy for STEM)
+- Weight different aspects (e.g., more emphasis on accuracy)
 
 #### 4. Test Against Your Actual Exam Questions
 
@@ -528,48 +530,47 @@ WITHOUT revealing step-by-step mechanisms that appear on exams
 
 ---
 
-## 💰 Cost Estimation
+## Cost Estimation
 
 ### OpenAI Pricing (December 2024, Standard Tier, per 1M tokens)
 
-| Model | Input | Output | Recommended For |
-|-------|-------|--------|-----------------|
-| **gpt-4o** | $2.50 | $10.00 | Production use, best balance |
-| **gpt-4o-mini** | $0.15 | $0.60 | Budget testing, high volume |
-| **gpt-5** | $1.25 | $10.00 | Latest features, similar cost to 4o |
-| **gpt-5-mini** | $0.25 | $2.00 | Budget alternative to 5 |
-| **o4-mini** | $1.10 | $4.40 | Enhanced reasoning |
+### OpenAI Pricing (December 2025, Standard Tier, per 1M tokens)
 
-### Example Costs (140 test prompts, avg 500 tokens/response)
+| Model | Input | Cached Input | Output | Recommended For |
+|-------|-------|--------------|--------|-----------------|
+| **gpt-5.2** | $1.75 | $0.175 | $14.00 | **New Flagship**, best for complex reasoning |
+| **gpt-5.1** | $1.25 | $0.125 | $10.00 | High-end production use, balance of cost/power |
+| **gpt-5** | $1.25 | $0.125 | $10.00 | Previous flagship, highly capable |
+| **gpt-4o** | $2.50 | $1.25 | $10.00 | Legacy high-quality model, multimodal support |
+| **gpt-4.1** | $2.00 | $0.50 | $8.00 | New balance option between 4o and 5.1 |
+| **gpt-5-mini** | $0.25 | $0.025 | $2.00 | Budget alternative to 5, high volume |
+| **gpt-4o-mini** | $0.15 | $0.075 | $0.60 | Cheapest model for initial testing, high volume |
+| **o4-mini** | $1.10 | $0.275 | $4.40 | Enhanced reasoning for mid-tier tasks |
 
-- **Processing** (gpt-4o): ~$0.50-1.00
-- **Evaluation** (gpt-4o as judge): ~$1.00-2.00
-- **Total pipeline**: ~$1.50-3.00 for complete testing cycle
-
-**💡 Tip**: Use `gpt-4o-mini` for initial testing ($0.10-0.30 total), then validate final version with `gpt-4o` or `gpt-5`.
+**Tip**: Use `gpt-4o-mini` for initial testing ($0.10-0.30 total), then validate final version with `gpt-5.2` (for max performance) or `gpt-5.1` (for cost efficiency).
 
 ---
 
-## 🧪 Why Custom Evaluation?
+## Why Custom Evaluation?
 
-Traditional NLP metrics (ROUGE, BLEU, BERTScore) measure **similarity to reference answers**—exactly what we DON'T want! These metrics would:
+Traditional NLP metrics (ROUGE, BLEU, BERTScore) measure similarity to reference answers—exactly what we DON'T want! These metrics would:
 
-- ❌ Penalize tutors for NOT giving the answer
-- ❌ Reward answer reveals as "high quality"
-- ❌ Miss manipulation resistance entirely
+- Penalise tutors for NOT giving the answer
+- Reward answer reveals as "high quality"
+- Miss manipulation resistance entirely
 
-Our **LLM-as-a-judge** approach evaluates:
+Our LLM-as-a-judge approach evaluates:
 
-- ✅ Behavioral adherence to tutoring role
-- ✅ Pedagogical quality of guidance
-- ✅ Resistance to jailbreaks and manipulation
-- ✅ Balance between being helpful and not giving answers
+- Behavioural adherence to tutoring role
+- Pedagogical quality of guidance
+- Resistance to jailbreaks and manipulation
+- Balance between being helpful and not giving answers
 
 This is why we built a custom evaluation pipeline specifically for educational AI systems.
 
 ---
 
-## 🛡️ Security & Jailbreak Testing
+## Security & Jailbreak Testing
 
 The included system prompt has been tested against:
 
@@ -583,7 +584,7 @@ The included system prompt has been tested against:
 
 ---
 
-## 📊 Interpreting Results
+## Interpreting Results
 
 ### Good Tutor Response (Score: 8-10/10)
 
@@ -608,11 +609,7 @@ The included system prompt has been tested against:
 
 ---
 
-## 🔧 Troubleshooting
-
-### "OpenAI object has no attribute 'responses'"
-
-- **Solution**: Use the fixed script version that uses `chat.completions.create()`
+## Troubleshooting
 
 ### "Rate limit exceeded"
 
@@ -632,49 +629,13 @@ The included system prompt has been tested against:
 
 ### Inconsistent evaluations
 
-- **Solution**: Lower temperature in judge model (we use 0.3)
+- **Solution**: Lower temperature in judge model (only relevant to models pre GPT-5)
 - **Solution**: Make rubric criteria more explicit
-- **Solution**: Run evaluation twice and compare
+- **Solution**: Run evaluation multiple times and compare
 
 ---
 
-## 🤝 Contributing & Extending
-
-### Ideas for Extension
-
-- Add support for other LLM providers (Anthropic, Google, etc.)
-- Create subject-specific prompt libraries
-- Build visualization dashboard for results
-- Implement multi-judge consensus for higher reliability
-- Add automated prompt generation for edge cases
-
-### Sharing Your Results
-
-If you adapt this for your course and get good results, consider sharing:
-
-- Your customized system prompt (anonymized)
-- Subject-specific test prompts
-- Evaluation rubric modifications
-- Performance benchmarks
-
----
-
-## 📝 Citation
-
-If you use this pipeline in academic work, please cite:
-
-```bibtex
-@software{ai_tutor_pipeline_2024,
-  title={AI Tutor Testing Pipeline},
-  author={[Your Name/Institution]},
-  year={2024},
-  url={https://github.com/[your-repo]}
-}
-```
-
----
-
-## 🎯 Deployment
+## Deployment
 
 Once you're satisfied with your tutor's performance:
 
@@ -693,19 +654,29 @@ The system prompt can be directly used with:
 
 ---
 
-## 📧 Support
-
-For issues, questions, or suggestions:
-
-- Open a GitHub issue
-- Check existing issues for solutions
-- Contribute improvements via pull request
-
----
-
 ## ⚖️ License
 
-[Choose appropriate license - MIT, Apache 2.0, GPL, etc.]
+MIT License
+
+Copyright (c) [2025] [Thomas John Filsell]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ---
 
@@ -718,10 +689,10 @@ This repository is intentionally:
 - **Model-agnostic**
 - **Easy to use** without programming expertise
 
-Its goal is to make safe, effective academic AI tutors **practical — not theoretical**.
+Its goal is to make safe, effective academic AI tutors practical — not theoretical.
 
 If you adapt this pipeline for your institution, you are encouraged to document and share your improvements.
 
 ---
 
-**Happy tutoring! 🎓**
+**Happy tutoring!**
