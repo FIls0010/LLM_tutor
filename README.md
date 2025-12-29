@@ -92,7 +92,7 @@ All detailed documentation lives in the **Wiki**.
 4. **[📊 Automated Evaluation](../../wiki/Automated-Evaluation)**  
    LLM-as-a-judge scoring and analysis
 
-5. **[🎓 Customization Examples](../../wiki/Customization-Examples)**  
+5. **[🎓 Customisation Examples](../../wiki/Customisation-Examples)**  
    Tutor, CS, Biology, Humanities, Medical, and more
 
 6. **[💰 Cost & Pricing](../../wiki/Cost-and-Pricing)**  
