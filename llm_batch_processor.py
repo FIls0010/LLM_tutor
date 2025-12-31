@@ -9,7 +9,7 @@ Usage (example):
         --input prompts.csv \
         --output responses.csv \
         --system system_prompt.txt \
-        --model gpt-4o \
+        --model gpt-5 \
         --concurrency 3 \
         --max-output-tokens 1024 \
         --save-interval 5 \
@@ -570,7 +570,8 @@ def main():
     if args.price_input_per_1k > 0.0 or args.price_output_per_1k > 0.0:
         print(f"Estimated total cost (USD): ${total_cost:.8f}")
         if len(results_by_index) > 0:
-            print(f"Average cost per processed row: ${ (total_cost / len(results_by_index)):.8f }")
+            avg_cost = total_cost / len(results_by_index)
+            print(f"Average cost per processed row: ${avg_cost:.8f}")
     else:
         print("Cost not calculated (no per-1k prices provided).")
     print(f"Results appended to: {args.output}")
